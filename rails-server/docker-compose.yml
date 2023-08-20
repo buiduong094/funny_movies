@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=changeme
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  web:
+    build: .
+    image: rails-on-docker:1.5.0
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 8000 -b '0.0.0.0'"
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    environment:
+      - DATABASE_URL=postgres://postgres:changeme@db
+      - BOOTSNAP_CACHE_DIR=/usr/local/bundle/_bootsnap
+      - WEB_CONCURRENCY=1
+      - HISTFILE=/usr/src/app/.dockerdev/.bash_history
+      - MALLOC_ARENA_MAX=2
+    volumes:
+      - .:/usr/src/app/:cached
+      - bundle:/usr/local/bundle
+      - rails_cache:/usr/src/app/tmp/cache
+      - node_modules:/usr/src/app/node_modules
+    depends_on:
+      - db
+
+  webpack:
+    build: .
+    image: rails-on-docker:1.5.0
+    command: yarn build --watch
+    volumes:
+      - .:/usr/src/app:cached
+      - bundle:/usr/local/bundle
+      - node_modules:/usr/src/app/node_modules
+
+volumes:
+  bundle:
+  db_data:
+  node_modules:
+  rails_cache:
