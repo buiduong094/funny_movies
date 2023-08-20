@@ -45,6 +45,26 @@ class App extends Component<Props, State> {
         showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
         showAdminBoard: user.roles.includes("ROLE_ADMIN"),
       });
+      const ws = new WebSocket("ws://localhost:8000/cable");
+      ws.onopen = () => {
+        console.log('connected to websocket server');
+        ws.send(
+          JSON.stringify({
+            command: 'subscribe',
+            identifier: JSON.stringify({
+              id: Math.random().toString().substring(2,15),
+              channel: "NotificationChannel"
+            })
+          })
+        )
+      };
+      ws.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === "ping") return;
+        if (data.type === "welcome") return;
+        if (data.type === "confirm_subscription") return;
+        console.log('message from ws',data);
+      }
     }
 
     EventBus.on("logout", this.logOut);

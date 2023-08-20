@@ -15,31 +15,6 @@ class MoviesController < ApplicationController
     # GET /movies/1
     # GET /movies/1.json
     def show
-#         # response = HTTParty.get('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=UkUVl8tFyEo&key=AIzaSyBfeyfvYHAP7CNirf8q0I7TDE8S_aOKU4A',headers: { 
-#         #     "Accept" => "application/json",
-#         #     'compress' => 'lzw'
-#         #   })
-#         # curl \
-#         # 'https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=UkUVl8tFyEo&key=AIzaSyBfeyfvYHAP7CNirf8q0I7TDE8S_aOKU4A' \
-#         # --header 'Accept: application/json' \
-#         # --compressed
-      
-#         # curl \
-#         # 'https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=UkUVl8tFyEo&key=[YOUR_API_KEY]' \
-#         # --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-#         # --header 'Accept: application/json' \
-#         # --compressed
-      
-#         #api AIzaSyBfeyfvYHAP7CNirf8q0I7TDE8S_aOKU4A
-
-
-# #        request.body = {} # SOME JSON DATA e.g {msg: 'Why'}.to_json
-      
-#         response = http.request(request)
-      
-#         body = JSON.parse(response.body) # e.g {answer: 'because it was there'}
-#         puts "body3:"
-#         puts body
     end
   
     # GET /movies/new
@@ -58,6 +33,13 @@ class MoviesController < ApplicationController
       duplicated = true;
       if @movie.nil?
         @movie = movie_service.create(movie_params["url_share"], current_user.email)
+        ActionCable.server.broadcast "NotificationChannel", {
+          description: @movie.description,
+          title: @movie.title,
+          url_share: @movie.url_share,
+          user_email: @movie.user_email,
+          username: current_user.username,
+        }
         duplicated = false;
       end
       respond_to do |format|
