@@ -44,33 +44,29 @@ export default class Home extends Component<Props, State> {
     return (
       <div className="container">
         <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-
-          <ul className="list-group">
+          <div className="list-group videos">
             {movies &&
               movies.map((movie, index) => (
-                <li
-                  key={index}
-                >
-                  {/* <iframe
-                    width="353"
-                    height="280"
-                    src={`https://www.youtube.com/embed/6pgIqCv8gGU`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="Embedded youtube"
-                  />  */}
-                  <label>{movie.title}</label>
-                  <label>Share by: {movie.user_email}</label>
-                  <label>Description:</label>
-                  {/* <p>{movie.description}</p> */}
-
-                </li>
-                
+                <div className="row" key={index}>
+                  <div className="video video-container col-md-6">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${movie.youtube_id}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="Embedded youtube"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="text-danger font-weight-bold">{movie.title}</label>
+                    <label>Share by: {movie.user_email}</label>
+                    <label>Description:</label>
+                    <p className="video-description">{movie.description}</p>
+                  </div>
+                </div>
               ))}
-          </ul>
-          <div className="video-responsive">
           </div>
         </header>
       </div>

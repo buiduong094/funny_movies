@@ -21,7 +21,9 @@ type Props = {};
 type State = {
   showModeratorBoard: boolean,
   showAdminBoard: boolean,
-  currentUser: IUser | undefined
+  currentUser: IUser | undefined,
+  showMessage: boolean,
+  showMessagerAlert: string
 }
 
 class App extends Component<Props, State> {
@@ -33,12 +35,14 @@ class App extends Component<Props, State> {
       showModeratorBoard: false,
       showAdminBoard: false,
       currentUser: undefined,
+      showMessage: false,
+      showMessagerAlert: ''
     };
   }
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
-
+    const uuid = Math.random().toString().substring(2,15);
     if (user) {
       this.setState({
         currentUser: user,
@@ -52,7 +56,7 @@ class App extends Component<Props, State> {
           JSON.stringify({
             command: 'subscribe',
             identifier: JSON.stringify({
-              id: Math.random().toString().substring(2,15),
+              id: uuid,
               channel: "NotificationChannel"
             })
           })
@@ -63,7 +67,20 @@ class App extends Component<Props, State> {
         if (data.type === "ping") return;
         if (data.type === "welcome") return;
         if (data.type === "confirm_subscription") return;
-        console.log('message from ws',data);
+        if(user.username === data.message.username) return;
+        this.setState({
+          showMessage: true,
+          showMessagerAlert: `${data.message.username} share ${data.message.title}`
+        });
+        const timeId = setTimeout(() => {
+          // After 3 seconds set the show value to false
+          this.setState({
+            showMessage: false
+          });
+        }, 10000);
+        return () => {
+          clearTimeout(timeId)
+        }
       }
     }
 
@@ -84,7 +101,7 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    const { currentUser, showMessage, showMessagerAlert} = this.state;
 
     return (
       <div>
@@ -158,7 +175,11 @@ class App extends Component<Props, State> {
             </div>
           )}
         </nav>
-
+        {showMessage ? (
+        <div className={`alert alert-info`}>
+          {showMessagerAlert}
+        </div>
+          ): ( <div></div>)}
         <div className="container mt-3">
           <Routes>
             <Route path="/" element={<Home />} />

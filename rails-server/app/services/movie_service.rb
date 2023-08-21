@@ -24,8 +24,7 @@ class MovieService
         uri = URI('https://youtube.googleapis.com/')
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
-        
-        request = Net::HTTP::Get.new("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id="+youtube_id+"&key=AIzaSyBfeyfvYHAP7CNirf8q0I7TDE8S_aOKU4A", 
+        request = Net::HTTP::Get.new("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id="+youtube_id+"&key="+ENV['YOUTUBE_API_KEY'], 
             {
                 'Accept' => 'application/json', 
                 'compress' => 'lzw'

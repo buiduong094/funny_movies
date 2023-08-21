@@ -77,10 +77,10 @@ export default class Share extends Component<Props, State> {
       url: Yup.string()
         .test(
           "len",
-          "The url must be between 3 and 200 characters.",
+          "The url must be between 10 and 200 characters.",
           (val: any) =>
             val &&
-            val.toString().length >= 3 &&
+            val.toString().length >= 10 &&
             val.toString().length <= 200
         )
         .required("This field is required!"),

@@ -30,3 +30,13 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+.list-group.videos .row {
+  margin-top: 40px;
+}
+.video-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+          line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
