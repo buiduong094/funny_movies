@@ -1,3 +1,4 @@
+require 'json'
 class MoviesController < ApplicationController
     skip_before_action :authenticate, only: [:index]
     protect_from_forgery unless: -> { request.format.json? }
@@ -9,7 +10,6 @@ class MoviesController < ApplicationController
     # GET /movies.json
     def index
       @movies = Movie.all
-   #   render :json =>  [{"id":1,"title":"abc","text":"yxaaaa","xxxxxxxxxxxxxxxx":"2023-07-27T11:45:50.129Z","updated_at":"2023-07-27T11:46:06.030Z"}]
     end
   
     # GET /movies/1
@@ -33,13 +33,17 @@ class MoviesController < ApplicationController
       duplicated = true;
       if @movie.nil?
         @movie = movie_service.create(movie_params["url_share"], current_user.email)
-        ActionCable.server.broadcast "NotificationChannel", {
+        puts "ClientPushWorker"
+        before = {
           description: @movie.description,
           title: @movie.title,
           url_share: @movie.url_share,
           user_email: @movie.user_email,
           username: current_user.username,
         }
+        after = JSON.parse(before.to_json)
+
+        ClientPushWorker.perform_async("NotificationChannel", after)
         duplicated = false;
       end
       respond_to do |format|

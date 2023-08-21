@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   mount ActionCable.server => "/cable"
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
   resources :users
   get 'welcome/index'
 
