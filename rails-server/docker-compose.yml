@@ -21,8 +21,10 @@ services:
     build: .
     command: bundle exec sidekiq
     volumes:
-      - '.:/project'
-      - '/project/tmp' # don't mount tmp directory
+      - .:/usr/src/app/:cached
+      - bundle:/usr/local/bundle
+      - rails_cache:/usr/src/app/tmp/cache
+      - node_modules:/usr/src/app/node_modules
     environment:
       - REDIS_URL_SIDEKIQ=redis://redis:6379/1
   web:

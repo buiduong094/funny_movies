@@ -4,7 +4,7 @@ RSpec.describe "movies/show", type: :view do
   before(:each) do
     @movie = assign(:movie, Movie.create!(
       :title => "Title",
-      :text => "MyText"
+      :description => "MyText"
     ))
   end
 

@@ -4,7 +4,7 @@ RSpec.describe "movies/edit", type: :view do
   before(:each) do
     @movie = assign(:movie, Movie.create!(
       :title => "MyString",
-      :text => "MyText"
+      :description => "Mydescription"
     ))
   end
 
@@ -15,7 +15,7 @@ RSpec.describe "movies/edit", type: :view do
 
       assert_select "input[name=?]", "movie[title]"
 
-      assert_select "textarea[name=?]", "movie[text]"
+      assert_select "textarea[name=?]", "movie[description]"
     end
   end
 end
