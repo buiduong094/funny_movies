@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   post 'signin', to: 'authentication#signin'
   post 'signup', to: 'authentication#signup'
   root 'welcome#index'
+  post 'movies/like', to: 'movies#like'
 end

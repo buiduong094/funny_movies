@@ -6,7 +6,7 @@ const API_URL = 'http://localhost:8000/';
 
 class UserService {
   getPublicContent() {
-    return axios.get(API_URL + 'movies.json');
+    return axios.get(API_URL + 'movies.json', { headers: authHeader() });
     // return axios.get(API_URL + 'all');
   }
 

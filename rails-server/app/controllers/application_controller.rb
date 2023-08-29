@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
+        return nil unless request.headers["Authorization"].present?
         decoded_token = JWT.decode(token, secret) 
         payload = decoded_token.first
         user_id = payload["user_id"]

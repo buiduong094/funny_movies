@@ -10,6 +10,10 @@ class MoviesController < ApplicationController
     # GET /movies.json
     def index
       @movies = Movie.all
+      movies = @movies.map {
+        |movie| movie.as_json(current_user)
+      }
+      render json: movies
     end
   
     # GET /movies/1
@@ -81,6 +85,17 @@ class MoviesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to movies_url, notice: 'Movie was successfully destroyed.' }
         format.json { head :no_content }
+      end
+    end
+
+    def like
+      if(params[:action_type] == 'like')
+        user_movie = UserMovie.new(user_id: current_user.id, movie_id: params[:id], action_type: params[:action_type])
+        user_movie.save
+        render json: user_movie.movie.as_json(current_user)
+      else
+        UserMovie.where(user_id: current_user.id, movie_id: params[:id], action_type: 'like').first.destroy
+        render json Movie.find(params[:id]).as_json(current_user)
       end
     end
   
