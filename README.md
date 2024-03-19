@@ -6,9 +6,13 @@
 
 View Live <a href="http://103.137.185.212:8081/">here</a>
 
-For <a href="https://github.com/buiduong094/funny_movies/tree/main/rails-server">Backend</a>
+Setup For <a href="https://github.com/buiduong094/funny_movies/tree/main/rails-server">Backend</a>
 <br>
-For <a href="https://github.com/buiduong094/funny_movies/tree/main/react-client">Frontend</a>
+Setup For <a href="https://github.com/buiduong094/funny_movies/tree/main/react-client">Frontend</a>
+
+The users:
+- test1@funnymovie.com/123456
+- test2@funnymovie.com/123456
 
 
 
