@@ -24,14 +24,13 @@ class MovieService
         uri = URI('https://youtube.googleapis.com/')
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
-        # request = Net::HTTP::Get.new("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id="+youtube_id+"&key="+ENV['YOUTUBE_API_KEY'], 
-        request = Net::HTTP::Get.new("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id="+youtube_id+"&key=AIzaSyAjQh0H1s-eXb2F0QzZpf9BIunvEByE8bU", 
+        request = Net::HTTP::Get.new("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id="+youtube_id+"&key="+ENV['YOUTUBE_API_KEY'],
             {
-                'Accept' => 'application/json', 
+                'Accept' => 'application/json',
                 'compress' => 'lzw'
             })
         response = http.request(request)
-        
+
         begin
             title = JSON.parse(response.body)["items"][0]["snippet"]["title"]
             description = JSON.parse(response.body)["items"][0]["snippet"]["description"]
@@ -81,4 +80,3 @@ class MovieService
         !youtube_id.nil? && !youtube_id[7].nil? && youtube_id[7].length==11? youtube_id[7] : nil
     end
 end
-  
