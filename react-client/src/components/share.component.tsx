@@ -21,7 +21,7 @@ export default class Share extends Component<Props, State> {
     super(props);
 
     this.shareMovie = this.shareMovie.bind(this);
-    
+
     this.state = {
       redirect: null,
       userReady: false,
@@ -40,12 +40,16 @@ export default class Share extends Component<Props, State> {
   }
 
   newShare = () => {
-    this.setState({successful: false});
+    this.setState({successful: false, message: ''});
   };
 
   shareMovie(formValue: { url: string; }) {
     const { url } = formValue;
+    const { submitted } = this.state
+    if(submitted) return;
+
     this.setState({
+      submitted: true,
       successful: false
     });
 
@@ -53,7 +57,7 @@ export default class Share extends Component<Props, State> {
       url
     ).then(
       response => {
-        this.setState({submitted: true,successful: true});
+        this.setState({submitted: false,successful: true});
       },
       error => {
         const resMessage =
@@ -65,7 +69,7 @@ export default class Share extends Component<Props, State> {
 
         this.setState({
           successful: false,
-          submitted: true,
+          submitted: false,
           message: resMessage
         });
       }
