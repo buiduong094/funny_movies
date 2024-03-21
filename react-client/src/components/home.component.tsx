@@ -71,7 +71,7 @@ export default class Home extends Component<Props, State> {
     const {movies} = this.state;
     return (
       <div className="container">
-        <header className="jumbotron">
+        <header className="">
           <div className="list-group videos">
             {movies &&
               movies.map((movie, index) => (

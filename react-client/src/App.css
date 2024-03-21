@@ -1,3 +1,4 @@
+
 label {
   display: block;
   margin-top: 10px;
@@ -31,7 +32,10 @@ label {
   border-radius: 50%;
 }
 .list-group.videos .row {
-  margin-top: 40px;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #e9ecef;
 }
 .video-description {
   overflow: hidden;
@@ -39,4 +43,14 @@ label {
   -webkit-line-clamp: 5; /* number of lines to show */
           line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+@media screen and (max-width: 600px) {
+  .nav-link.nav-userinfor {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    display: none;
+  }
 }

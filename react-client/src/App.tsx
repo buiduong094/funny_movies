@@ -144,7 +144,7 @@ class App extends Component<Props, State> {
           {currentUser ? (
             <div className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a href="#" className="nav-link" >
+              <a href="#" className="nav-link nav-userinfor" >
                 Wellcome {currentUser.email}
               </a>
             </li>
