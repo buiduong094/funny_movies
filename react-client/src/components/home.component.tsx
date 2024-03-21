@@ -42,25 +42,13 @@ export default class Home extends Component<Props, State> {
 
   like(formValue: { id: string; action_type: string}) {
     const { id, action_type } = formValue;
-    const {movies} = this.state;
-
-    // this.setState({
-    //   successful: false
-    // });
+    let {movies} = this.state;
 
     MovieService.like(
       id,action_type
     ).then(
       response => {
-        console.log(response)
-        // movies.forEach(function (m) {
-        //   if(m.id == response.id){
-        //     m= response;
-        //   }
-        // }); 
-        for(let i =0;i<movies.length;i++){
-          movies[i]= response;
-        }
+        movies = movies.map(movie => movie.id === response.id ? response : movie);
         this.setState({movies: [...movies]});
       },
       error => {
@@ -102,8 +90,10 @@ export default class Home extends Component<Props, State> {
                   <div className="col-md-6">
                     <label className="text-danger font-weight-bold">{movie.title}</label>
                     <label>Share by: {movie.user_email}</label>
-                    {movie.like_action =="like" ? <button onClick={(e)=> this.like({id: movie.id, action_type: 'unlike'})}>unlike</button> : <div></div>}
+                    {/* {movie.like_action =="like" ? <button onClick={(e)=> this.like({id: movie.id, action_type: 'unlike'})}>unlike</button> : <div></div>}
                     {movie.like_action =="none" ? <button onClick={(e)=> this.like({id: movie.id, action_type: 'like'})}>like</button> : <div></div>}
+                    {movie.like_action =="dislike" ? <button onClick={(e)=> this.like({id: movie.id, action_type: 'undislike'})}>undislike</button> : <div></div>}
+                    {movie.like_action =="none" ? <button onClick={(e)=> this.like({id: movie.id, action_type: 'dislike'})}>dislike</button> : <div></div>} */}
                     <label>Description:</label>
                     <p className="video-description">{movie.description}</p>
                   </div>

@@ -93,13 +93,13 @@ class MoviesController < ApplicationController
     end
 
     def like
-      if(params[:action_type] == 'like')
+      if(params[:action_type] == 'like') || (params[:action_type] == 'dislike')
         user_movie = UserMovie.new(user_id: current_user.id, movie_id: params[:id], action_type: params[:action_type])
         user_movie.save
         render json: user_movie.movie.as_json(current_user)
       else
-        UserMovie.where(user_id: current_user.id, movie_id: params[:id], action_type: 'like').first.destroy
-        render json Movie.find(params[:id]).as_json(current_user)
+        UserMovie.where(user_id: current_user.id, movie_id: params[:id], action_type: params[:action_type].sub!('un','')).first.destroy
+        render json: Movie.find(params[:id]).as_json(current_user)
       end
     end
 

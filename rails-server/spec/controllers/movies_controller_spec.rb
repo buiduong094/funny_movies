@@ -25,25 +25,46 @@ require 'rails_helper'
 
 RSpec.describe MoviesController, type: :controller do
 
+  before(:all) do
+    User.destroy_all
+    user = User.new
+    user.email = "test1@abc.com"
+    user.username = "test1"
+    user.password = "123456"
+    user.save
+    payload = {user_id: user.id}
+    secret = ENV['SECRET_KEY_BASE'] ||  Rails.application.secrets.secret_key_base
+    @token = JWT.encode(payload, secret)
+  end
+
   # This should return the minimal set of attributes required to create a valid
   # Movie. As you add validations to Movie, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
     {
-      :title => "Title",
-      :description => "MyText"
+      url_share: "https://www.youtube.com/watch?v=GEPkkn6JvDU"
     }
-#    skip("Add a hash of attributes valid for your model")
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      url_share: "https://aaaaaaaaaaaa"
+    }
   }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # MoviesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
+
+  let(:valid_headers) {
+    puts "valid_headers"
+    puts '@token  = ' + @token
+    {
+      'HTTP_ACCEPT': 'application/json',
+      Authorization: 'Bearer ' + @token
+    }
+  }
 
   describe "GET #index" do
     it "returns a success response" do
@@ -76,20 +97,39 @@ RSpec.describe MoviesController, type: :controller do
   #   end
   # end
 
-  # describe "POST #create" do
-  #   context "with valid params" do
-  #     it "creates a new Movie" do
-  #       expect {
-  #         post :create, params: {movie: valid_attributes}, session: valid_session
-  #       }.to change(Movie, :count).by(1)
-  #     end
+  describe "POST #create" do
+    context "with invalid params" do
+      it "creates a new Movie" do
+        request.headers.merge!(valid_headers)
+        post :create, params: {movie: valid_attributes}, session: {
+          'HTTP_ACCEPT' => "application/json",
+        }
+        expect(response).to be_successful
+      end
 
-  #     it "redirects to the created movie" do
-  #       post :create, params: {movie: valid_attributes}, session: valid_session
-  #       expect(response).to redirect_to(Movie.last)
-  #     end
-  #   end
+      it "creates a duplicate movie" do
+        puts "POST #create"
+        request.headers.merge!(valid_headers)
 
+        post :create, params: {movie: valid_attributes}, session: {
+          'HTTP_ACCEPT' => "application/json",
+        }
+        # re-share again
+        post :create, params: {movie: valid_attributes}, session: {
+          'HTTP_ACCEPT' => "application/json",
+        }
+        expect(JSON.parse(response.body)["message"]).to eql("Movie was duplicated.")
+      end
+
+      it "Return Invalid Movie" do
+        request.headers.merge!(valid_headers)
+        post :create, params: {movie: invalid_attributes}, session: {
+          'HTTP_ACCEPT' => "application/json",
+        }
+        expect(JSON.parse(response.body)["message"]).to eql("Invalid Movie")
+      end
+    end
+  end
   #   context "with invalid params" do
   #     it "returns a success response (i.e. to display the 'new' template)" do
   #       post :create, params: {movie: invalid_attributes}, session: valid_session
