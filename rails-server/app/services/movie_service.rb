@@ -45,7 +45,6 @@ class MovieService
             movie.save
         rescue => e
             #invalid youtube video
-            puts "invalid youtube #{youtube_id}"
             return nil
         end
         return movie

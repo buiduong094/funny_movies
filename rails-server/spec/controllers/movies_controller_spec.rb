@@ -58,8 +58,6 @@ RSpec.describe MoviesController, type: :controller do
   let(:valid_session) { {} }
 
   let(:valid_headers) {
-    puts "valid_headers"
-    puts '@token  = ' + @token
     {
       'HTTP_ACCEPT': 'application/json',
       Authorization: 'Bearer ' + @token
@@ -108,7 +106,6 @@ RSpec.describe MoviesController, type: :controller do
       end
 
       it "creates a duplicate movie" do
-        puts "POST #create"
         request.headers.merge!(valid_headers)
 
         post :create, params: {movie: valid_attributes}, session: {

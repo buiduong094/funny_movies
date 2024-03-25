@@ -11,7 +11,6 @@ class MovieService {
         url_share
       }, { headers: authHeader() })
       .then(response => {
-        console.log('create response',response)
         return response.data;
       });
   }
@@ -22,7 +21,6 @@ class MovieService {
         id,action_type
       }, { headers: authHeader() })
       .then(response => {
-        console.log('like response',response)
         return response.data;
       });
   }

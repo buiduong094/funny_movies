@@ -51,7 +51,6 @@ class App extends Component<Props, State> {
       });
       const ws = new WebSocket("ws://localhost:8000/cable");
       ws.onopen = () => {
-        console.log('connected to websocket server');
         ws.send(
           JSON.stringify({
             command: 'subscribe',

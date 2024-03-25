@@ -3,13 +3,13 @@ class ApplicationController < ActionController::Base
     protect_from_forgery with: :null_session
     def authenticate
         if request.headers["Authorization"]
-            begin 
-                # decoded_token = JWT.decode(token, secret) 
+            begin
+                # decoded_token = JWT.decode(token, secret)
                 # payload = decoded_token.first
                 # user_id = payload["user_id"]
-                # @user = User.find(user_id) 
+                # @user = User.find(user_id)
                 @user = current_user
-            rescue => exception 
+            rescue => exception
                 render json: {message: "Error: #{exception}"}, status: :forbidden
             end
         else
@@ -18,7 +18,6 @@ class ApplicationController < ActionController::Base
     end
 
     def token
-        puts request.headers["Authorization"].split(" ")[1]
         request.headers["Authorization"].split(" ")[1]
     end
 
@@ -32,11 +31,10 @@ class ApplicationController < ActionController::Base
 
     def current_user
         return nil unless request.headers["Authorization"].present?
-        decoded_token = JWT.decode(token, secret) 
+        decoded_token = JWT.decode(token, secret)
         payload = decoded_token.first
         user_id = payload["user_id"]
-        puts "userid is #{user_id}"
-        @current_user = User.find(user_id) 
+        @current_user = User.find(user_id)
     end
 
 end

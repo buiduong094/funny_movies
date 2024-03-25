@@ -3,7 +3,6 @@ class AuthenticationController < ApplicationController
 
     def signin
         @user = User.find_by(username: params[:username])
-        puts params[:username]
         if @user
             if(@user.authenticate(params[:password]))
                 payload = {user_id: @user.id}
@@ -50,7 +49,6 @@ class AuthenticationController < ApplicationController
     end
 
     private
-  
       # Never trust parameters from the scary internet, only allow the white list through.
       def user_params
         params.require(:authentication).permit(:username, :password, :email)
