@@ -4,10 +4,6 @@ class ApplicationController < ActionController::Base
     def authenticate
         if request.headers["Authorization"]
             begin
-                # decoded_token = JWT.decode(token, secret)
-                # payload = decoded_token.first
-                # user_id = payload["user_id"]
-                # @user = User.find(user_id)
                 @user = current_user
             rescue => exception
                 render json: {message: "Error: #{exception}"}, status: :forbidden

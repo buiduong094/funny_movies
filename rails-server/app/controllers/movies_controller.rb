@@ -30,40 +30,24 @@ class MoviesController < ApplicationController
     def edit
     end
 
-    # POST /movies
+    # POST /moovie
     # POST /movies.json
     def create
-      youtube_id = movie_service.get_youtube_id_by_url movie_params["url_share"]
-      @movie = movie_service.check_duplicate_share movie_params["url_share"], current_user.email
-      # set default value is true if youtube_id is valid
-      duplicated = youtube_id.present?
+      youtube_id = Movie.get_youtube_id_by_url movie_params["url_share"]
+      @movie = Movie.check_duplicate_share movie_params["url_share"], current_user.email
+      duplicated = @movie.present?
       if @movie.nil? && youtube_id.present?
         @movie = movie_service.create(movie_params["url_share"], current_user.email)
-        # puts "ClientPushWorker"
-        if @movie
-          before = {
-            description: @movie.description,
-            title: @movie.title,
-            url_share: @movie.url_share,
-            user_email: @movie.user_email,
-            username: current_user.username,
-          }
-          after = JSON.parse(before.to_json)
-
-          ClientPushWorker.perform_async("NotificationChannel", after)
-        end
-        duplicated = false;
+        @movie.send_notification(current_user) if @movie.present?
       end
       respond_to do |format|
-        if duplicated
-          format.html { redirect_to @movie, notice: 'Movie was duplicated.' }
-          format.json { render json: {message: 'Movie was duplicated.'}, status: :unprocessable_entity }
-        elsif @movie
+        if @movie && !duplicated
           format.html { redirect_to @movie, notice: 'Movie was successfully created.' }
           format.json { render :show, status: :created, location: @movie }
         else
           format.html { render :new }
-          format.json { render json: {message: 'Invalid Movie'}, status: :unprocessable_entity }
+          message = duplicated ? 'Duplicated Movie' : 'Invalid Movie'
+          format.json { render json: {message: message}, status: :unprocessable_entity }
         end
       end
     end
