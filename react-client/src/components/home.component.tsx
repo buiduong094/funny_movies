@@ -1,5 +1,4 @@
 import { Component } from "react";
-import {useState} from 'react';
 import UserService from "../services/user.service";
 import MovieService from "../services/movie.service";
 
@@ -24,9 +23,9 @@ export default class Home extends Component<Props, State> {
   componentDidMount() {
     UserService.getPublicContent().then(
       response => {
-        console.log(response.data)
         this.setState({
-          movies: response.data
+          // movies: response.data // use ruby response
+          movies: response.data.results // use nestjs response
         });
       },
       error => {
@@ -74,7 +73,7 @@ export default class Home extends Component<Props, State> {
         <header className="">
           <div className="list-group videos">
             {movies &&
-              movies.map((movie, index) => (
+              movies?.map((movie, index) => (
                 <div className="row" key={index}>
                   <div className="video video-container col-md-6">
                     <iframe

@@ -15,6 +15,7 @@ import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
 
 import EventBus from "./common/EventBus";
+import { MOVIE_NEW, WEBSOCKET_URL } from "./common/Constants";
 
 type Props = {};
 
@@ -46,10 +47,10 @@ class App extends Component<Props, State> {
     if (user) {
       this.setState({
         currentUser: user,
-        showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-        showAdminBoard: user.roles.includes("ROLE_ADMIN"),
       });
-      const ws = new WebSocket("ws://localhost:8000/cable");
+
+      const ws = new WebSocket(WEBSOCKET_URL);
+
       ws.onopen = () => {
         ws.send(
           JSON.stringify({
@@ -67,6 +68,8 @@ class App extends Component<Props, State> {
         if (data.type === "welcome") return;
         if (data.type === "confirm_subscription") return;
         if(user.username === data.message.username) return;
+        if (data.type !== MOVIE_NEW) return;
+
         this.setState({
           showMessage: true,
           showMessagerAlert: `${data.message.username} share ${data.message.title}`

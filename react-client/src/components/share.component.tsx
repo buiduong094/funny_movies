@@ -60,18 +60,27 @@ export default class Share extends Component<Props, State> {
         this.setState({submitted: false,successful: true});
       },
       error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        this.setState({
-          successful: false,
-          submitted: false,
-          message: resMessage
-        });
+        if (error.response?.status === 401) {
+          alert("Your session has expired. Please login again.");
+          AuthService.logout();
+          localStorage.removeItem("user");
+          this.setState({ redirect: "/login" });
+        } else {
+          let resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          if (resMessage && resMessage.includes("exception.")) {
+            resMessage = resMessage.replace("exception.", "");
+          }
+          this.setState({
+            successful: false,
+            submitted: false,
+            message: resMessage
+          });
+        }
       }
     );
   };
